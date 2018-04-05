@@ -50,7 +50,7 @@ ASFLAGS =
 
 LIBDIR = ./SDL
 LDFLAGS =
-LIBS = -lpsppower -lpsppower -lpspwlan -lSDL -lGL -lGLU -glut -lpspvfpu -lpspgum -lpspgu -lpspge -lpspaudio -lpsprtc -lm
+LIBS = -lpsppower -lpsppower -lpspwlan -lSDL -lGL -lGLU -glut -lpspvfpu -lpspgum -lpspgu -lpspge -lpspaudio -lpsprtc -lm -lpsphprm
 
 EXTRA_TARGETS = EBOOT.PBP
 PSP_EBOOT_TITLE = DSONPSP V0.6 by Yoshihiro (kayliah Edition)
