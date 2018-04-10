@@ -41,7 +41,7 @@ void FPS()
    float curr_fps = 1.0f / curr_ms;
 
 	pspDebugScreenSetXY(0,5);
-	pspDebugScreenPrintf("FPS %d.%03d V0.6",(int)curr_fps,(int)((curr_fps-(int)curr_fps) * 1000.0f));
+	pspDebugScreenPrintf("FPS %d.%03d V0.7",(int)curr_fps,(int)((curr_fps-(int)curr_fps) * 1000.0f));
     gettimeofday(&time_slices[val & 15],0);
 
 		val++;
