@@ -452,6 +452,7 @@ process_ctrls_events( u16 *keypad,
 	  else
 	  {
 		  mouse.down = TRUE;
+		  //Handling of the PSP's joystick? For the "touchsreen"
 		  if(vertical){
           if (pad.Ly < 10){
 			--mouse.x;
