@@ -255,6 +255,8 @@ if (NDS_LoadROM( rom_filename  , MC_TYPE_AUTODETECT, 1, cflash_disk_image_file) 
   
 
 //    SDL_ShowCursor(SDL_DISABLE);
+
+ 
   
   while(!sdl_quit) {
   	
