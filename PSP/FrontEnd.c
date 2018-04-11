@@ -301,7 +301,7 @@ void DSEmuGui(char *path,char *out)
 		pspDebugScreenSetXY(1, 0);
 		pspDebugScreenPrintf("\n");
 		pspDebugScreenPrintf("\n");
-		pspDebugScreenPrintf("  Welcome to DSonPSP Based on *DeSmuMe*\n\n");
+		pspDebugScreenPrintf("  Welcome to %s Based on *DeSmuMe*\n\n");
 		pspDebugScreenPrintf("  press CROSS for launch your game \n\n");
 		pspDebugScreenPrintf("  press SQUARE now for exit :=X \n\n");
 		pspDebugScreenPrintf("  Roms path %s \n\n",tmp);

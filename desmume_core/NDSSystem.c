@@ -333,7 +333,6 @@ static void NDS_SetROMSerial()
 	{
 		memset(ROMserial, 0, sizeof(ROMserial));
 		strcpy(ROMserial, "Homebrew");
-	    nds.Homebrew = 1;
 	}
 	else
 	{
@@ -342,7 +341,6 @@ static void NDS_SetROMSerial()
 		memcpy(ROMserial+12+1, header->gameCode, 4);
 		memcpy(ROMserial+12+1+4, &header->makerCode, 2);
 		memset(ROMserial+19, '\0', 1);
-	    nds.Homebrew = 0;
 	}
 	free(header);
 #ifdef __psp__
@@ -922,7 +920,7 @@ NDS_FillDefaultFirmwareConfigData( struct NDS_fw_config_data *fw_config) {
   fw_config->message_len = str_length;
 
   /* default to English */
-  fw_config->language = 2;//lang;
+  fw_config->language = lang;
 
   /* default touchscreen calibration */
   fw_config->touch_cal[0].adc_x = 0x200;
@@ -996,13 +994,10 @@ u32 NDS_exec(BOOL force)
 	//TODO - since NDS_exec is not necessarily called one frame at a time, this could be wrong.
 	LagFrameFlag=1;
 
-    nds.sleeping = FALSE;
- 
+
 	nb = ((NDSCLK) - last_cycle);
     last_cycle = nb;
 	nb += nds.cycles++;//(nds.cycles>>26)<<26;
-
-
 
 	for(; (nb >= nds.cycles) && ((force)||(execute)); )
 	{
@@ -1021,6 +1016,7 @@ u32 NDS_exec(BOOL force)
 						break; //it is rather pointless to do this more than once
 					} else{
 					nds.ARM9Cycle += armcpu_exec(&NDS_ARM9);
+			//		NDS_ARM9VBlankInt();
 					}
 				}
 			}
@@ -1040,6 +1036,7 @@ u32 NDS_exec(BOOL force)
 					}
 					else{
 						nds.ARM7Cycle += (armcpu_exec(&NDS_ARM7)<<1);
+						//NDS_ARM7VBlankInt();
 					   }
 					}
 			}
@@ -1059,14 +1056,22 @@ u32 NDS_exec(BOOL force)
 			{
 				T1WriteWord(ARM9Mem.ARM9_REG, 4, T1ReadWord(ARM9Mem.ARM9_REG, 4) | 2);
 				T1WriteWord(MMU.ARM7_REG, 4, T1ReadWord(MMU.ARM7_REG, 4) | 2);
+//				NDS_ARM9HBlankInt();
+//				NDS_ARM7HBlankInt();
 
 				if(nds.VCount<192)
 				{
+/*					if(!skipThisFrame)
+					{
+						GPU_ligne(&MainScreen, nds.VCount);
+						GPU_ligne(&SubScreen, nds.VCount);
+					}
+*/
 						GPU_ligne(&MainScreen, nds.VCount);
 						GPU_ligne(&SubScreen, nds.VCount);
 
-				    	skipThisFrame3D = skipThisFrame;
-                        
+					skipThisFrame3D = skipThisFrame;
+
                   if(MMU.DMAStartTime[0][0] == 2)
                     MMU_doDMA(0, 0);
                   if(MMU.DMAStartTime[0][1] == 2)
@@ -1087,6 +1092,8 @@ u32 NDS_exec(BOOL force)
 				T1WriteWord(ARM9Mem.ARM9_REG, 4, T1ReadWord(ARM9Mem.ARM9_REG, 4) & 0xFFFD);
 				T1WriteWord(MMU.ARM7_REG, 4, T1ReadWord(MMU.ARM7_REG, 4) & 0xFFFD);
 
+//					NDS_ARM9VBlankInt();
+//					NDS_ARM7VBlankInt();
 
               if(MMU.DMAStartTime[0][0] == 3)
                 MMU_doDMA(0, 0);
@@ -1181,6 +1188,7 @@ u32 NDS_exec(BOOL force)
 					nds.VCount = 0;
 					T1WriteWord(ARM9Mem.ARM9_REG, 4, T1ReadWord(ARM9Mem.ARM9_REG, 4) & 0xFFFE);
 					T1WriteWord(MMU.ARM7_REG, 4, T1ReadWord(MMU.ARM7_REG, 4) & 0xFFFE);
+
 					NDS_ARM9VBlankInt();
 					NDS_ARM7VBlankInt();
 
@@ -1230,13 +1238,12 @@ u32 NDS_exec(BOOL force)
 				T1WriteWord(ARM9Mem.ARM9_REG, 6, nds.VCount);
 				T1WriteWord(MMU.ARM7_REG, 6, nds.VCount);
 
-	
 				vmatch = T1ReadWord(ARM9Mem.ARM9_REG, 4);
 				if(nds.VCount==((vmatch>>8)|((vmatch<<1)&(1<<8))))
 				{
 					T1WriteWord(ARM9Mem.ARM9_REG, 4, T1ReadWord(ARM9Mem.ARM9_REG, 4) | 4);
-				//	if(T1ReadWord(ARM9Mem.ARM9_REG, 4) & 32)
-//						NDS_makeARM9Int(2);
+					if(T1ReadWord(ARM9Mem.ARM9_REG, 4) & 32)
+						NDS_makeARM9Int(2);
 				}
 				else
 					T1WriteWord(ARM9Mem.ARM9_REG, 4, T1ReadWord(ARM9Mem.ARM9_REG, 4) & 0xFFFB);
@@ -1245,8 +1252,8 @@ u32 NDS_exec(BOOL force)
 				if(nds.VCount==((vmatch>>8)|((vmatch<<1)&(1<<8))))
 				{
 					T1WriteWord(MMU.ARM7_REG, 4, T1ReadWord(MMU.ARM7_REG, 4) | 4);
-				//	if(T1ReadWord(MMU.ARM7_REG, 4) & 32)
-//						NDS_makeARM7Int(2);
+					if(T1ReadWord(MMU.ARM7_REG, 4) & 32)
+						NDS_makeARM7Int(2);
 				}
 				else
 					T1WriteWord(MMU.ARM7_REG, 4, T1ReadWord(MMU.ARM7_REG, 4) & 0xFFFB);

@@ -53,7 +53,7 @@ LDFLAGS =
 LIBS = -lpsppower -lpsppower -lpspwlan -lSDL -lGL -lGLU -glut -lpspvfpu -lpspgum -lpspgu -lpspge -lpspaudio -lpsprtc -lm -lpsphprm
 
 EXTRA_TARGETS = EBOOT.PBP
-PSP_EBOOT_TITLE = DSONPSP V0.6 by Yoshihiro (kayliah Edition)
+PSP_EBOOT_TITLE = DSONPSP V0.7
 PSP_EBOOT_ICON  = ./icon/icon0.png
 PSP_EBOOT_PIC1 = ./icon/pic1.png
 

@@ -11,6 +11,9 @@
 #include "video.h"
 #include "FrontEnd.h"
 
+float curr_ms = 1.0f;
+struct timeval time_slices[16];
+int val = 0;
 
 
 #define SLICE_SIZE 64
@@ -31,17 +34,12 @@ static unsigned short __attribute__((aligned(16))) ScratchBuffer[BUF_WIDTH * SCR
 static unsigned int VramBufferOffset;
 static unsigned int __attribute__((aligned(16))) List[512*192*4]; /* TODO: ? */
 
-float curr_ms = 1.0f;
-struct timeval time_slices[16];
-int val = 0;
-
-
 void FPS()
 {
    float curr_fps = 1.0f / curr_ms;
 
 	pspDebugScreenSetXY(0,5);
-	pspDebugScreenPrintf("FPS %d.%03d V0.7",(int)curr_fps,(int)((curr_fps-(int)curr_fps) * 1000.0f));
+	pspDebugScreenPrintf("FPS %d.%03d V0.6",(int)curr_fps,(int)((curr_fps-(int)curr_fps) * 1000.0f));
     gettimeofday(&time_slices[val & 15],0);
 
 		val++;
@@ -70,7 +68,6 @@ void FPS()
 		}
 		sceDisplayWaitVblankStart();
 }
-
 
 void* fbp0;
 void* fbp1;
