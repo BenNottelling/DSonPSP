@@ -23,7 +23,7 @@
 #include <stdlib.h>
 
 #include "NDSSystem.h"
-//#include "FrontEnd.h"
+#include "FrontEnd.h"
 #include "render3D.h"
 #include "MMU.h"
 #include "cflash.h"
